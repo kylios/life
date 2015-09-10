@@ -1,0 +1,24 @@
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
+.clear {
+	clear: both;
+}
+
+.application .configurations {
+	border: 1px solid black;
+	padding: 8px;
+}
+
+.application .configurations select {
+	width: 100%;
+}
+
+.application .configurations select,
+.application .configurations button {
+	display: block;
+	margin: 3px;
+}

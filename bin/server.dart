@@ -20,6 +20,7 @@ main() async {
         };
         request.response..statusCode = HttpStatus.OK
                         ..headers.set(HttpHeaders.CONTENT_TYPE, 'application/json')
+                        ..headers.set('Access-Control-Allow-Origin', "http://localhost:8080")
                         ..writeln(JSON.encode(response))
                         ..close();
       }));
@@ -35,6 +36,7 @@ main() async {
         };
         request.response..statusCode = HttpStatus.OK
                         ..headers.add(HttpHeaders.CONTENT_TYPE, 'application/json')
+                        ..headers.set('Access-Control-Allow-Origin', "http://localhost:8080")
                         ..writeln(JSON.encode(response))
                         ..close();
       }));

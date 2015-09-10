@@ -28,8 +28,31 @@ class Handler {
         for (int i = 1; i < match.groupCount + 1; i++) {
           args.add(match.group(i));
         }
-        // Returns a closure with the request and arguments in scope
-        return () => fn(request, args);
+        // Returns a closure with the request and arguments in scope.
+        // This function does not get called immediately, but is returned to the
+        // caller to be executed at a later time.
+        return () async {
+          // First try to run the handled function
+          try {
+            await fn(request, args);
+
+          } catch (e, st) {
+            // Catch errors and return a 500
+            var response = {
+              "exception": {
+                "type": "${reflect(e).type.reflectedType}",
+                "message": e.toString(),
+                "stacktrace": st.toString()
+              }
+            };
+            print(response);
+            request.response..statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+                        ..headers.set(HttpHeaders.CONTENT_TYPE, 'application/json')
+                        ..headers.set('Access-Control-Allow-Origin', "http://localhost:8080")
+                        ..writeln(JSON.encode(response))
+                        ..close(); 
+          }
+        };
       }
     }
 
@@ -98,13 +121,8 @@ class Server {
   /// Handle an http request by searching the list of handlers for the suitable
   /// handler for this request, and then invoking the function assigned to that
   /// handler.
-  void _handleRequest(HttpRequest request) {
-    try {
-      _HandlerFn fn = this._findHandler(request);
-      fn();
-    } catch (e) {
-      print('Exception in handleRequest: $e');
-    }
-    print('Request handled.');
+  dynamic _handleRequest(HttpRequest request) async {
+    _HandlerFn fn = this._findHandler(request);
+    return await fn();
   }
 }

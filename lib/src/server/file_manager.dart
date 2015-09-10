@@ -1,23 +1,21 @@
 part of server;
 
 
+class ConfigurationNotFound extends StateError {
+  ConfigurationNotFound(String name) : super("Configuration $name not found");
+}
+
+
 class ConfigurationMalformed extends StateError {
   ConfigurationMalformed(String name, String message) : 
     super("Configuration $name malformed: $message");
 }
 
 
-class Configuration {
+class ConfigurationFactory {
 
-  final String name;
-  final String description;
-  final Map cells;
+  static Future<Configuration> loadFromFile(String name, File file) async {
 
-  Configuration(this.name, this.description, this.cells);
-
-  /// Asynchronously return a new configuration, loaded from a file
-  /// maybe someday they'll add async factory constructors
-  static Future<Configuration> fromFile(String name, File file) async {
     String contents = await file.readAsString(encoding: UTF8);
     Map c = JSON.decode(contents);
 
@@ -29,20 +27,6 @@ class Configuration {
     }
     return new Configuration(name, c['description'], c['cells']);
   }
-
-  /// json-serialize the configuration
-  Map json() {
-    return {
-      'name': this.name,
-      'description': this.description,
-      'cells': this.cells
-    };
-  }
-}
-
-
-class ConfigurationNotFound extends StateError {
-  ConfigurationNotFound(String name) : super("Configuration $name not found");
 }
 
 
@@ -79,6 +63,6 @@ class FileManager {
     if (entry == null) {
       throw new ConfigurationNotFound(name);
     }
-    return Configuration.fromFile(name, entry);
+    return ConfigurationFactory.loadFromFile(name, entry);
   }
 }

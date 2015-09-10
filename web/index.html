@@ -6,8 +6,16 @@
 	<body>
 		<h1>Welcome to Life!</h1>
 		<div class="application">
-			<canvas></canvas>
-			<button class="start">Start Simulation</button>
+			<div class="left canvas_area">
+				<canvas></canvas>
+			</div>
+			<div class="right configurations">
+				<h3>Choose a Configuration</h3>
+				<select id="configurations" size="10"></select>
+				<button id="load">Load Configuration</button>
+				<button id="start">Start Simulation</button>
+			</div>
+			<div class="clear"></div>
 		</div>
 	    <script type="application/javascript" src="main.dart.js"></script>
 	    <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
