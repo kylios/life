@@ -45,6 +45,25 @@ class ClientApi {
     return c.future;
   }
 
+  /// Call /configuration/<config_id>
+  /// Return a Configuration object
+  Future<Configuration> getConfiguration(String name) {
+
+    Completer<Configuration> c = new Completer<Configuration>();
+
+    var request = new HttpRequest();
+    request.open('GET', this._url('/configurations/$name'));
+    Stream loadEnd = request.onLoadEnd;
+
+    loadEnd.listen((e) {
+        var res = JSON.decode(request.responseText);
+        c.complete(new Configuration.fromJson(res['configuration']));
+      });
+    request.send('');
+
+    return c.future;
+  }
+
   String _url(String uri) {
     return "${this.server_host}$uri";
   }

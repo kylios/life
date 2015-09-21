@@ -3,11 +3,21 @@ library configuration;
 
 class Configuration {
 
-  final String name;
-  final String description;
-  final Map cells;
+  String _name;
+  String _description;
+  Map<String, List<int>> _cells;
 
-  Configuration(this.name, this.description, this.cells);
+  String get name => this._name;
+  String get description => this._description;
+  Map<String, List<int>> get cells => this._cells;
+
+  Configuration(this._name, this._description, this._cells);
+
+  Configuration.fromJson(Map json) {
+    this._name = json['name'];
+    this._description = json['description'];
+    this._cells = json['cells'];
+  }
 
   /// json-serialize the configuration
   Map json() {

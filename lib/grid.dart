@@ -1,5 +1,7 @@
 library grid;
 
+import 'package:life/configuration.dart';
+
 /// Represents a change to a particular cell in the grid
 class Delta {
   final int row;
@@ -17,10 +19,44 @@ class Neighbor {
 
 class Grid {
 
+  int _rows;
+  int _cols;
   List<List<bool>> _world;
 
   /// Initialize a new grid object by specifying its size
-  Grid(this._world);
+  Grid(this._rows, this._cols) {
+
+    this._world = this._emptyWorld;
+  }
+
+  /// Create a new grid from a matrix of cells
+  Grid.fromWorld(this._world) {
+    this._rows = this._world.length;
+    this._cols = this._world[0].length;
+  }
+   
+  /// Initialize a new grid from a configuration
+  Grid.fromConfiguration(this._rows, this._cols, Configuration config) {
+    this._world = this._emptyWorld;
+    config.cells.forEach((String srow, List<int> cols) {
+        int row = int.parse(srow);
+        for (int col in cols) {
+          this._world[row][col] = true;
+        }
+      });
+  }
+
+  /// Create a new empty world.
+  List<List<bool>> get _emptyWorld {
+    return new List<List<bool>>.generate(this._rows, 
+      (r) => new List<bool>.filled(this._cols, false));
+  }
+
+  void setGrid(List<List<bool>> world) {
+    this._world = new List<List<bool>>.generate(
+      world.length,
+      (r) => new List<bool>.from(world[r]));
+  }
 
   bool inRange(int r, int c) =>
     r >= 0 && r < this._world.length &&
